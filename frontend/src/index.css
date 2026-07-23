@@ -32,7 +32,7 @@
 
 .glass-button {
   background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
-  @apply text-white font-medium rounded-xl px-5 py-3 hover:shadow-glass-glow active:scale-98 transition-all duration-200;
+  @apply text-white font-medium rounded-xl px-5 py-3 hover:shadow-glass-glow active:scale-95 transition-all duration-200;
 }
 
 .text-gradient {
