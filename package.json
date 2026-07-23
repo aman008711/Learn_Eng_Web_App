@@ -1,0 +1,10 @@
+{
+  "name": "jarvis-coach-root",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "frontend:install": "npm install --prefix frontend --legacy-peer-deps",
+    "frontend:dev": "npm run dev --prefix frontend",
+    "frontend:build": "npm run build --prefix frontend"
+  }
+}
