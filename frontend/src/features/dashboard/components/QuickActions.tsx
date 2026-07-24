@@ -1,4 +1,5 @@
 import { MessageSquare, BookOpen, CheckSquare, Plus, Lightbulb } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface QuickActionsProps {
   onMockActivity: (type: string, desc: string, xp: number) => void;
@@ -6,6 +7,7 @@ interface QuickActionsProps {
 }
 
 export default function QuickActions({ onMockActivity, isMocking }: QuickActionsProps) {
+  const navigate = useNavigate();
   return (
     <div className="glass-panel p-6 rounded-2xl shadow-glass space-y-4">
       <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
@@ -16,7 +18,7 @@ export default function QuickActions({ onMockActivity, isMocking }: QuickActions
       <div className="flex flex-col gap-3">
         {/* Practice Speaking Button */}
         <button
-          onClick={() => alert("Jarvis AI Coach voice channel starting soon!")}
+          onClick={() => navigate('/chat')}
           className="glass-button w-full flex items-center justify-center gap-3 py-3 font-semibold text-sm"
         >
           <MessageSquare className="h-5 w-5" />
