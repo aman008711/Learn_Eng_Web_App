@@ -135,18 +135,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     set({ messages: [...messages, tempUserMsg, tempAssistantMsg] });
 
     try {
-      // Fetch access token from Zustand auth store state safely
-      // Read local storage token as fallback if needed
-      const authData = localStorage.getItem('auth-storage');
-      let token = '';
-      if (authData) {
-        try {
-          const parsed = JSON.parse(authData);
-          token = parsed.state?.accessToken || '';
-        } catch (e) {
-          // ignore
-        }
-      }
+      const token = localStorage.getItem('access_token') || '';
 
       // 3. Initiate SSE Streaming HTTP Request
       const response = await fetch(`${API_URL}/api/v1/chat/stream`, {
