@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, Date, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Integer, Date, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from app.db.base_class import Base
 
