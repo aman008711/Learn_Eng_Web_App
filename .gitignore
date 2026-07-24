@@ -66,3 +66,7 @@ dmypy.json
 # Subagents & IDE caches
 .agents/
 .gemini/
+
+# SQLite databases
+*.db
+*.sqlite3
