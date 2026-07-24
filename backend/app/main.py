@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.api.v1.auth import router as auth_router
 from app.api.v1.dashboard import router as dashboard_router
+from app.api.v1.chat import router as chat_router
 from app.db.base import Base
 from app.db.session import engine
 import logging
@@ -36,6 +37,7 @@ app.add_middleware(
 # Register routers
 app.include_router(auth_router, prefix=f"{settings.API_V1_STR}/auth", tags=["Authentication"])
 app.include_router(dashboard_router, prefix=f"{settings.API_V1_STR}/dashboard", tags=["Dashboard"])
+app.include_router(chat_router, prefix=f"{settings.API_V1_STR}/chat", tags=["Chat"])
 
 @app.get("/")
 def root():
