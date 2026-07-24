@@ -1,6 +1,6 @@
 import asyncio
 from typing import AsyncGenerator, List, Dict, Any, Union, Optional
-from google import genai
+from google.genai import Client
 from google.genai import types
 from app.config import settings
 
@@ -14,7 +14,7 @@ COACH_SYSTEM_INSTRUCTION = (
     "Keep replies concise, conversational, and tailored to language tutoring."
 )
 
-def get_genai_client() -> Optional[genai.Client]:
+def get_genai_client() -> Optional[Client]:
     """
     Configure and instantiate the new GenAI Client if a valid key is provided.
     """
@@ -22,7 +22,7 @@ def get_genai_client() -> Optional[genai.Client]:
     if not key or "your-google-gemini" in key:
         return None
     try:
-        return genai.Client(api_key=key)
+        return Client(api_key=key)
     except Exception:
         return None
 
