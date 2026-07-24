@@ -3,6 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.api.v1.auth import router as auth_router
 from app.api.v1.dashboard import router as dashboard_router
+from app.db.base import Base
+from app.db.session import engine
+
+# Self-healing: auto-create all tables in Supabase PostgreSQL if they don't exist
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
