@@ -50,21 +50,25 @@ async def get_chat_stream(
             await asyncio.sleep(0.08)
     else:
         try:
-            # Build chat history parts
+            # Build chat history parts using the new SDK types
             contents = []
             if history:
                 for h in history:
                     role = "model" if h.role == "assistant" else "user"
-                    contents.append({
-                        "role": role,
-                        "parts": [h.content]
-                    })
+                    contents.append(
+                        types.Content(
+                            role=role,
+                            parts=[types.Part.from_text(text=h.content)]
+                        )
+                    )
             
             # Append current user prompt
-            contents.append({
-                "role": "user",
-                "parts": [message]
-            })
+            contents.append(
+                types.Content(
+                    role="user",
+                    parts=[types.Part.from_text(text=message)]
+                )
+            )
 
             # Call stream generating content using the new SDK syntax
             config = types.GenerateContentConfig(
