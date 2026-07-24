@@ -5,8 +5,8 @@ from app.db.models.user import User
 from app.core.security import get_password_hash
 
 class UserRepository:
-    def get_by_id(self, db: Session, user_id: uuid.UUID) -> Optional[User]:
-        return db.query(User).filter(User.id == user_id).first()
+    def get_by_id(self, db: Session, user_id: Union[uuid.UUID, str]) -> Optional[User]:
+        return db.query(User).filter(User.id == str(user_id)).first()
 
     def get_by_email(self, db: Session, email: str) -> Optional[User]:
         return db.query(User).filter(User.email == email).first()

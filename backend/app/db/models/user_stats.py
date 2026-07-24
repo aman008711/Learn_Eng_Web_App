@@ -6,7 +6,7 @@ from app.db.base_class import Base
 class UserStats(Base):
     __tablename__ = "user_stats"
 
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, index=True)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, index=True)
     streak = Column(Integer, default=0, nullable=False)
     xp = Column(Integer, default=0, nullable=False)
     level = Column(Integer, default=1, nullable=False)
