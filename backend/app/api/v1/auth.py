@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.api import deps
 from app.config import settings
+from app.db.models.user import User
 from app.db.repository.user_repo import user_repo
 from app.schemas.user import UserCreate, UserOut, ForgotPasswordRequest, ResetPasswordRequest
 from app.schemas.token import Token, TokenRefreshRequest, TokenPayload
