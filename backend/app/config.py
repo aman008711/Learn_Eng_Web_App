@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "temporary-development-fallback-key-should-be-replaced-in-env"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 11520 # 8 days
 
-    DATABASE_URL: str
+    DATABASE_URL: str = ""
 
     # AI and Storage Integrations
     OPENAI_API_KEY: Optional[str] = None
