@@ -1,30 +1,28 @@
 import asyncio
 from typing import AsyncGenerator, List, Dict, Any, Union, Optional
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from app.config import settings
 
-def get_gemini_model() -> Optional[genai.GenerativeModel]:
+# System instructions setting coach persona
+COACH_SYSTEM_INSTRUCTION = (
+    "You are Jarvis, a supportive, premium, and friendly AI English Coach. "
+    "Your role is to help the user practice English conversational skills. "
+    "Be extremely encouraging, highlight grammar errors politely and detail corrections, "
+    "propose more natural alternatives when relevant, and prompt questions to keep the flow. "
+    "Format structural critiques and translations beautifully in markdown. "
+    "Keep replies concise, conversational, and tailored to language tutoring."
+)
+
+def get_genai_client() -> Optional[genai.Client]:
     """
-    Configure and instantiate the Gemini model if a valid key is provided.
+    Configure and instantiate the new GenAI Client if a valid key is provided.
     """
     key = settings.GEMINI_API_KEY
     if not key or "your-google-gemini" in key:
         return None
     try:
-        genai.configure(api_key=key)
-        # Define coach persona system instructions
-        system_instruction = (
-            "You are Jarvis, a supportive, premium, and friendly AI English Coach. "
-            "Your role is to help the user practice English conversational skills. "
-            "Be extremely encouraging, highlight grammar errors politely and detail corrections, "
-            "propose more natural alternatives when relevant, and prompt questions to keep the flow. "
-            "Format structural critiques and translations beautifully in markdown. "
-            "Keep replies concise, conversational, and tailored to language tutoring."
-        )
-        return genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            system_instruction=system_instruction
-        )
+        return genai.Client(api_key=key)
     except Exception:
         return None
 
@@ -36,13 +34,13 @@ async def get_chat_stream(
     Asynchronous generator yielding streamed string responses.
     Falls back to a simulated response if Gemini is not configured.
     """
-    model = get_gemini_model()
+    client = get_genai_client()
     
-    if model is None:
+    if client is None:
         # Self-healing simulated response generator
         mock_response = (
             "Hello! I am **Jarvis**, your personal AI English Coach.\n\n"
-            "To unlock my real-time AI capabilities, please configure a valid `GEMINI_API_KEY` in the [backend/.env](file:///c:/Users/amnk3/Eng%20Web%20App/backend/.env) file. "
+            "To unlock my real-time AI capabilities, please configure a valid `GEMINI_API_KEY` in the [backend/.env](file:///c:/Users/amnk3/Eng%2520Web%2520App/backend/.env) file. "
             "In the meantime, I am running in **Demo Mode** using a local simulated brain. "
             "Let's practice! Here is a tip: when writing English, try to use active verbs to make your sentences sound more descriptive and engaging. "
             "What topic would you like to discuss today?"
@@ -68,8 +66,17 @@ async def get_chat_stream(
                 "parts": [message]
             })
 
-            # Call stream generating content
-            response = model.generate_content(contents, stream=True)
+            # Call stream generating content using the new SDK syntax
+            config = types.GenerateContentConfig(
+                system_instruction=COACH_SYSTEM_INSTRUCTION
+            )
+            
+            response = client.models.generate_content_stream(
+                model="gemini-2.5-flash",
+                contents=contents,
+                config=config
+            )
+            
             for chunk in response:
                 if chunk.text:
                     yield chunk.text
