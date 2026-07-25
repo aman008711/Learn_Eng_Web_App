@@ -1,7 +1,6 @@
 import asyncio
 from typing import AsyncGenerator, List, Dict, Any, Union, Optional
-from google.genai import Client
-from google.genai import types
+from groq import AsyncGroq
 from app.config import settings
 
 # System instructions setting coach persona
@@ -14,15 +13,15 @@ COACH_SYSTEM_INSTRUCTION = (
     "Keep replies concise, conversational, and tailored to language tutoring."
 )
 
-def get_genai_client() -> Optional[Client]:
+def get_groq_client() -> Optional[AsyncGroq]:
     """
-    Configure and instantiate the new GenAI Client if a valid key is provided.
+    Configure and instantiate the AsyncGroq Client if a valid key is provided.
     """
-    key = settings.GEMINI_API_KEY
-    if not key or "your-google-gemini" in key:
+    key = settings.GROQ_API_KEY
+    if not key or "your-groq-api-key" in key:
         return None
     try:
-        return Client(api_key=key)
+        return AsyncGroq(api_key=key)
     except Exception:
         return None
 
@@ -31,16 +30,16 @@ async def get_chat_stream(
     history: List[Any] = None
 ) -> AsyncGenerator[str, None]:
     """
-    Asynchronous generator yielding streamed string responses.
-    Falls back to a simulated response if Gemini is not configured.
+    Asynchronous generator yielding streamed string responses from Groq Llama 3.3.
+    Falls back to a simulated response if Groq is not configured.
     """
-    client = get_genai_client()
+    client = get_groq_client()
     
     if client is None:
         # Self-healing simulated response generator
         mock_response = (
             "Hello! I am **Jarvis**, your personal AI English Coach.\n\n"
-            "To unlock my real-time AI capabilities, please configure a valid `GEMINI_API_KEY` in the [backend/.env](file:///c:/Users/amnk3/Eng%2520Web%2520App/backend/.env) file. "
+            "To unlock my real-time AI capabilities, please configure a valid `GROQ_API_KEY` in the [backend/.env](file:///c:/Users/amnk3/Eng%2520Web%2520App/backend/.env) file. "
             "In the meantime, I am running in **Demo Mode** using a local simulated brain. "
             "Let's practice! Here is a tip: when writing English, try to use active verbs to make your sentences sound more descriptive and engaging. "
             "What topic would you like to discuss today?"
@@ -50,41 +49,41 @@ async def get_chat_stream(
             await asyncio.sleep(0.08)
     else:
         try:
-            # Build chat history parts using the new SDK types
-            contents = []
+            # Build OpenAI-compatible chat history messages
+            messages = []
+            
+            # System persona instructions
+            messages.append({
+                "role": "system",
+                "content": COACH_SYSTEM_INSTRUCTION
+            })
+            
+            # Historical turns
             if history:
                 for h in history:
-                    role = "model" if h.role == "assistant" else "user"
-                    contents.append(
-                        types.Content(
-                            role=role,
-                            parts=[types.Part.from_text(text=h.content)]
-                        )
-                    )
+                    messages.append({
+                        "role": h.role, # "user" or "assistant"
+                        "content": h.content
+                    })
             
-            # Append current user prompt
-            contents.append(
-                types.Content(
-                    role="user",
-                    parts=[types.Part.from_text(text=message)]
-                )
-            )
+            # Current user prompt
+            messages.append({
+                "role": "user",
+                "content": message
+            })
 
-            # Call stream generating content using the new SDK syntax
-            config = types.GenerateContentConfig(
-                system_instruction=COACH_SYSTEM_INSTRUCTION
+            # Call Groq async chat completions streaming
+            completion = await client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=messages,
+                stream=True,
             )
             
-            response = client.models.generate_content_stream(
-                model="gemini-2.0-flash",
-                contents=contents,
-                config=config
-            )
-            
-            for chunk in response:
-                if chunk.text:
-                    yield chunk.text
-                await asyncio.sleep(0.01)
+            async for chunk in completion:
+                content = chunk.choices[0].delta.content
+                if content:
+                    yield content
+                    
         except Exception as e:
             err_msg = f"Oops! I encountered an error communicating with the AI service: {e}. Please verify your API settings."
             for word in err_msg.split(" "):

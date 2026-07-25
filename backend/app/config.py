@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     # AI and Storage Integrations
     OPENAI_API_KEY: Optional[str] = None
-    GEMINI_API_KEY: Optional[str] = None
+    GROQ_API_KEY: Optional[str] = None
     ELEVENLABS_API_KEY: Optional[str] = None
     ELEVENLABS_VOICE_ID: Optional[str] = None
     SUPABASE_URL: Optional[str] = None
