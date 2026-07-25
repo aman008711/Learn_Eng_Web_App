@@ -15,7 +15,7 @@ router = APIRouter()
 async def check_english_grammar(
     payload: GrammarCheckRequest,
     db: Session = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user)
 ):
     """
     Analyze grammar of a submitted sentence, save results, and return analysis payload.
@@ -62,7 +62,7 @@ async def check_english_grammar(
 @router.get("/history", response_model=List[GrammarCheckResponse])
 def get_check_history(
     db: Session = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user)
 ):
     """
     Get all historical grammar checks for the active logged-in user.
@@ -93,7 +93,7 @@ def get_check_history(
 def delete_history_item(
     check_id: str,
     db: Session = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user)
 ):
     """
     Delete a specific grammar check card from history log.
