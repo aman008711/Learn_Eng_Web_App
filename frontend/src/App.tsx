@@ -7,6 +7,7 @@ import ForgotPassword from './features/auth/ForgotPassword';
 import ResetPassword from './features/auth/ResetPassword';
 import Dashboard from './features/dashboard/Dashboard';
 import ChatInterface from './features/chat/ChatInterface';
+import GrammarChecker from './features/grammar/GrammarChecker';
 
 const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -36,6 +37,12 @@ function App() {
         <Route path="/chat" element={
           <ProtectedRoute>
             <ChatInterface />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/grammar" element={
+          <ProtectedRoute>
+            <GrammarChecker />
           </ProtectedRoute>
         } />
         
