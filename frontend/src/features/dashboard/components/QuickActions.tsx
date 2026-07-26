@@ -28,7 +28,7 @@ export default function QuickActions({ onMockActivity, isMocking }: QuickActions
         {/* Core Actions Grid */}
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => alert("Vocabulary Review tool coming soon!")}
+            onClick={() => navigate('/vocab')}
             className="p-3 rounded-xl border border-white/5 bg-white/2 hover:bg-white/5 active:scale-95 transition-all text-xs font-semibold text-slate-300 flex flex-col items-center gap-2"
           >
             <BookOpen className="h-5 w-5 text-primary-500" />

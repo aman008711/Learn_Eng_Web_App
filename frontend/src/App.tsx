@@ -8,6 +8,7 @@ import ResetPassword from './features/auth/ResetPassword';
 import Dashboard from './features/dashboard/Dashboard';
 import ChatInterface from './features/chat/ChatInterface';
 import GrammarChecker from './features/grammar/GrammarChecker';
+import VocabularyBuilder from './features/vocab/VocabularyBuilder';
 
 const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -43,6 +44,12 @@ function App() {
         <Route path="/grammar" element={
           <ProtectedRoute>
             <GrammarChecker />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/vocab" element={
+          <ProtectedRoute>
+            <VocabularyBuilder />
           </ProtectedRoute>
         } />
         
