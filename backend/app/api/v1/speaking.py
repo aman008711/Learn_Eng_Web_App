@@ -107,16 +107,34 @@ def submit_speaking_session(
     current_user: User = Depends(deps.get_current_user)
 ):
     """
-    Finalizes speaking session, logging dashboard activity and awarding +50 XP.
+    Finalizes speaking session, logging dashboard activity, awarding +50 XP,
+    updating active daily minutes completed, and advancing user streak.
     """
     xp_gained = 50
-    minutes = payload.duration_seconds // 60
+    session_minutes = max(1, payload.duration_seconds // 60) if payload.duration_seconds > 0 else 0
     
+    # 1. Update daily minutes and streak in UserStats
+    stats = dashboard_repo.get_or_create_stats(db, current_user.id)
+    stats.daily_minutes_completed = min(stats.daily_goal_minutes, stats.daily_minutes_completed + session_minutes)
+    
+    from datetime import date as dt_date, timedelta
+    today = dt_date.today()
+    if stats.last_active_date != today:
+        if stats.last_active_date == today - timedelta(days=1):
+            stats.streak += 1
+        elif stats.last_active_date is None or stats.last_active_date < today - timedelta(days=1):
+            stats.streak = 1
+        stats.last_active_date = today
+    
+    db.add(stats)
+    db.commit()
+
+    # 2. Log activity and award XP
     dashboard_repo.add_xp_and_log_activity(
         db,
         user_id=current_user.id,
         activity_type="speaking",
-        description=f"Completed speaking practice with Jarvis AI for {minutes} min ({payload.turns_completed} conversational turns).",
+        description=f"Completed speaking practice with Jarvis AI for {session_minutes} min ({payload.turns_completed} conversational turns).",
         xp_gained=xp_gained
     )
 
