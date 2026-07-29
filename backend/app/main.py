@@ -6,6 +6,7 @@ from app.api.v1.dashboard import router as dashboard_router
 from app.api.v1.chat import router as chat_router
 from app.api.v1.grammar import router as grammar_router
 from app.api.v1.vocab import router as vocab_router
+from app.api.v1.speaking import router as speaking_router
 from app.db.base import Base
 from app.db.session import engine
 import logging
@@ -42,6 +43,7 @@ app.include_router(dashboard_router, prefix=f"{settings.API_V1_STR}/dashboard", 
 app.include_router(chat_router, prefix=f"{settings.API_V1_STR}/chat", tags=["Chat"])
 app.include_router(grammar_router, prefix=f"{settings.API_V1_STR}/grammar", tags=["Grammar Checker"])
 app.include_router(vocab_router, prefix=f"{settings.API_V1_STR}/vocab", tags=["Vocabulary Builder"])
+app.include_router(speaking_router, prefix=f"{settings.API_V1_STR}/speaking", tags=["Speaking Practice"])
 
 @app.get("/")
 def root():

@@ -9,6 +9,7 @@ import Dashboard from './features/dashboard/Dashboard';
 import ChatInterface from './features/chat/ChatInterface';
 import GrammarChecker from './features/grammar/GrammarChecker';
 import VocabularyBuilder from './features/vocab/VocabularyBuilder';
+import SpeakingPractice from './features/speaking/SpeakingPractice';
 
 const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -50,6 +51,12 @@ function App() {
         <Route path="/vocab" element={
           <ProtectedRoute>
             <VocabularyBuilder />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/speaking" element={
+          <ProtectedRoute>
+            <SpeakingPractice />
           </ProtectedRoute>
         } />
         
